@@ -36,6 +36,10 @@
         .word:hover {
             background-color: #45a049;
         }
+        #status {
+            margin-top: 20px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -48,12 +52,38 @@
         <button class="word" data-text="နေကောင်းပါတယ်">နေကောင်းပါတယ်<br>(I'm fine)</button>
         <button class="word" data-text="တွေ့ရတာဝမ်းသာပါတယ်">တွေ့ရတာဝမ်းသာပါတယ်<br>(Nice to meet you)</button>
     </div>
-
+    <div id="status"></div>
     <script>
+        const statusElement = document.getElementById('status');
+
         function speakBurmese(text) {
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'my-MM'; // Burmese language code
-            speechSynthesis.speak(utterance);
+            
+            // Check if Burmese is supported
+            const voices = speechSynthesis.getVoices();
+            const burmeseVoice = voices.find(voice => voice.lang === 'my-MM');
+            
+            if (burmeseVoice) {
+                utterance.voice = burmeseVoice;
+                speechSynthesis.speak(utterance);
+                statusElement.textContent = 'Speaking Burmese...';
+            } else {
+                // Fallback: Use English transliteration
+                const transliterations = {
+                    'မင်္ဂလာပါ': 'min-ga-la-ba',
+                    'ကျေးဇူးတင်ပါတယ်': 'kyay-zuu-tin-ba-deh',
+                    'ဘယ်လိုနေလဲ': 'beh-lo-nay-leh',
+                    'နေကောင်းပါတယ်': 'nay-kaun-ba-deh',
+                    'တွေ့ရတာဝမ်းသာပါတယ်': 'twe-ya-da-wun-tha-ba-deh'
+                };
+                
+                const transliteration = transliterations[text] || text;
+                utterance.lang = 'en-US';
+                utterance.text = transliteration;
+                speechSynthesis.speak(utterance);
+                statusElement.textContent = 'Burmese not supported. Speaking English transliteration...';
+            }
         }
 
         document.querySelectorAll('.word').forEach(button => {
@@ -62,6 +92,15 @@
                 speakBurmese(text);
             });
         });
+
+        // Check for Burmese support on load
+        speechSynthesis.onvoiceschanged = () => {
+            const voices = speechSynthesis.getVoices();
+            const burmeseVoice = voices.find(voice => voice.lang === 'my-MM');
+            if (!burmeseVoice) {
+                statusElement.textContent = 'Burmese voice not available. Will use English transliteration.';
+            }
+        };
     </script>
 </body>
 </html>
