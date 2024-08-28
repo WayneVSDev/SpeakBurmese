@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burmese Speaker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .word-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .word {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .word:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Burmese Speaker</h1>
+    <p>Click on a word or phrase to hear it spoken in Burmese:</p>
+    <div class="word-container">
+        <button class="word" data-text="မင်္ဂလာပါ">မင်္ဂလာပါ<br>(Hello)</button>
+        <button class="word" data-text="ကျေးဇူးတင်ပါတယ်">ကျေးဇူးတင်ပါတယ်<br>(Thank you)</button>
+        <button class="word" data-text="ဘယ်လိုနေလဲ">ဘယ်လိုနေလဲ<br>(How are you?)</button>
+        <button class="word" data-text="နေကောင်းပါတယ်">နေကောင်းပါတယ်<br>(I'm fine)</button>
+        <button class="word" data-text="တွေ့ရတာဝမ်းသာပါတယ်">တွေ့ရတာဝမ်းသာပါတယ်<br>(Nice to meet you)</button>
+    </div>
+
+    <script>
+        function speakBurmese(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'my-MM'; // Burmese language code
+            speechSynthesis.speak(utterance);
+        }
+
+        document.querySelectorAll('.word').forEach(button => {
+            button.addEventListener('click', () => {
+                const text = button.getAttribute('data-text');
+                speakBurmese(text);
+            });
+        });
+    </script>
+</body>
+</html>
